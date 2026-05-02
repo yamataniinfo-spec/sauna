@@ -1,432 +1,841 @@
-import React, { useState } from 'react';
-import { MapPin, Utensils, Instagram, ChevronRight, Droplets, Flame, Beer, Navigation, Clock, Thermometer, ArrowLeft, Coffee, Soup, Train, Sun, Moon, Sparkles, Megaphone, Tag, Lock, X } from 'lucide-react';
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大井町サウナプロジェクト | Oimachi Sauna Project</title>
+    <style>
+        /* --- CSS Variables --- */
+        :root {
+            --color-base: #F7F3EB;
+            --color-alt: #EDE7DC;
+            --color-dark: #2A1E14;
+            --color-accent: #C9924B;
+            --color-keikyu: #E60012;
+            --color-oimachi: #F39800;
+            --color-rinkai: #009094;
+            --font-main: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+        }
 
-const App = () => {
-  const [view, setView] = useState('home');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+        /* --- Reset & Global --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  // 指定されたカラーパレット
-  const colors = {
-    base: "#F7F3EB",      // ベース：温かい空間
-    alt: "#EDE7DC",       // 切り替え：セクション背景
-    dark: "#2A1E14",      // 強調：暗（炭・重厚感）
-    accent: "#C9924B",    // 暖色：サウナの熱・光
-    // 3路線の差し色
-    keikyu: "#E60012",    // 京急レッド
-    oimachi: "#F39800",   // 大井町線オレンジ
-    rinkai: "#009094",    // 臨海線ターコイズ
-  };
+        html {
+            scroll-behavior: smooth;
+        }
 
-  const newsItems = [
-    { id: 1, date: "2026.04.14", category: "OPEN", title: "「品川サウナ」が描く、新しい大井町の夜。ついにベールを脱ぐ。", line: colors.keikyu },
-    { id: 2, date: "2026.04.10", category: "UPDATE", title: "ととのい後の「一杯」を。サ飯リストに地元愛溢れる店舗を掲載。", line: colors.oimachi },
-    { id: 3, date: "2026.04.05", category: "EVENT", title: "街を歩き、汗を流し、また歩く。スタンプラリー、はじまります。", line: colors.rinkai },
-  ];
+        body {
+            font-family: var(--font-main);
+            background-color: var(--color-base);
+            color: var(--color-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
 
-  const saMeshiCategories = [
-    { 
-      id: 'heavy', 
-      label: 'ガッツリ・熱量', 
-      english: 'HEAVY / STAMINA',
-      desc: '身体が本能的に欲する、脂と塩分の黄金比。',
-      visual: '丼・肉料理',
-      items: ['背脂ラーメン', 'スタミナカレー', '鉄板焼肉'],
-      img: "https://images.unsplash.com/photo-1591814448473-7af27feaf71e?auto=format&fit=crop&q=80&w=800",
-    },
-    { 
-      id: 'light', 
-      label: 'サッパリ・清涼', 
-      english: 'LIGHT / REFRESH',
-      desc: 'ととのった五感に染み渡る、出汁の優しさ。',
-      visual: '蕎麦・冷麺',
-      items: ['冷やしうどん', '十割蕎麦', '鮮魚の塩焼き'],
-      img: "https://images.unsplash.com/photo-1547595628-c61a29f496f0?auto=format&fit=crop&q=80&w=800",
-    }
-  ];
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
 
-  const coursePlans = [
-    {
-      id: 'A',
-      title: "コースA: 仕事帰りのクイックリセット旅",
-      target: "働くサウナーへ",
-      accent: colors.accent,
-      icon: <Moon size={32} />,
-      steps: [
-        { time: "18:30", title: "大井町駅に到着", desc: "ネオン輝く駅前。仕事の重圧を脱ぎ捨て、期待を胸に改札を抜ける。", icon: <Train size={20}/>, img: "https://images.unsplash.com/photo-1555854811-662552107acc?auto=format&fit=crop&q=80&w=600" },
-        { time: "18:45", title: "熱気と対峙する", desc: "ロウリュの音、漂う香り。水風呂が思考を鮮明に変えていく。", icon: <Flame size={20}/>, img: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=600" },
-        { time: "20:00", title: "最高の水分補給", desc: "火照った身体に黄金比の「オロポ」を。全ての疲れを溶かしていく。", icon: <Droplets size={20}/>, img: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&q=80&w=600" },
-        { time: "20:30", title: "スタミナサ飯で完結", desc: "名物の餃子とビール。ととのった後の味覚で味わう至高の体験。", icon: <Utensils size={20}/>, img: "https://images.unsplash.com/photo-1541529086526-db283c563270?auto=format&fit=crop&q=80&w=600" }
-      ]
-    },
-    {
-      id: 'B',
-      title: "コースB: 休日午後の満喫ハシゴ旅",
-      target: "自分へのご褒美に",
-      accent: colors.accent,
-      icon: <Sun size={32} />,
-      steps: [
-        { time: "13:00", title: "昼下がりのチルタイム", desc: "喧騒を離れたカフェ。サウナ前の贅沢なひとときを読書と共に。", icon: <Coffee size={20}/>, img: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&q=80&w=600" },
-        { time: "15:00", title: "ゆったり没入サウナ", desc: "昼の外気浴。時間を忘れて、深く、心地よくととのう。", icon: <Sparkles size={20}/>, img: "https://images.unsplash.com/photo-1596131397999-bb0159495033?auto=format&fit=crop&q=80&w=600" },
-        { time: "17:30", title: "路地裏のハシゴ酒", desc: "夕暮れの東小路。提灯の明かりに誘われ、大井町のディープな食をハシゴ。", icon: <Navigation size={20}/>, img: "https://images.unsplash.com/photo-1583155102374-f25769742512?auto=format&fit=crop&q=80&w=600" },
-        { time: "20:00", title: "最高の気分で家路に", desc: "全身が幸福感で満たされる。明日へのエネルギーを街から受け取って。", icon: <Moon size={20}/>, img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=600" }
-      ]
-    }
-  ];
+        ul {
+            list-style: none;
+        }
 
-  return (
-    <div className="min-h-screen font-sans" style={{ backgroundColor: colors.base, color: colors.dark }}>
-      
-      {/* Header: Editorial & Railway Identity */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b-2 border-[#2A1E14] flex h-20 items-stretch overflow-hidden">
-        <div className="flex items-center px-8 border-r-2 border-[#2A1E14] cursor-pointer bg-white z-10" onClick={() => setView('home')}>
-          <div className="w-10 h-10 border-2 border-[#2A1E14] flex items-center justify-center text-white mr-4" style={{ backgroundColor: colors.accent }}>
-            <Droplets size={24} />
-          </div>
-          <div className="flex flex-col">
-            <h1 className="font-black text-xl tracking-tighter leading-none uppercase">Oimachi Sauna</h1>
-            <span className="text-[9px] font-black tracking-[0.4em] opacity-60 uppercase">Project 2026</span>
-          </div>
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section-padding {
+            padding: 100px 0;
+        }
+
+        /* --- Header --- */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 2px solid var(--color-dark);
+            display: flex;
+            align-items: stretch;
+            z-index: 1000;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+            border-right: 2px solid var(--color-dark);
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--color-accent);
+            border: 2px solid var(--color-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+        }
+
+        .logo-text h1 {
+            font-size: 20px;
+            font-weight: 900;
+            line-height: 1;
+            text-transform: uppercase;
+            letter-spacing: -0.05em;
+        }
+
+        .logo-text span {
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: 0.4em;
+            opacity: 0.6;
+            text-transform: uppercase;
+        }
+
+        nav.desktop-nav {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        @media (max-width: 1024px) {
+            nav.desktop-nav { display: none; }
+        }
+
+        nav.desktop-nav a {
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+        }
+
+        .header-railway {
+            display: flex;
+            width: 120px;
+            border-left: 2px solid var(--color-dark);
+        }
+
+        .railway-line {
+            flex: 1;
+        }
+
+        /* Hamburger */
+        .hamburger-btn {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+            padding: 0 24px;
+            border-left: 2px solid var(--color-dark);
+            background: white;
+            cursor: pointer;
+            border-top: none;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        @media (max-width: 1024px) {
+            .hamburger-btn { display: flex; }
+            .header-railway { display: none; }
+        }
+
+        .hb-line { width: 32px; height: 4px; }
+
+        /* --- Mobile Menu Overlay --- */
+        #mobile-menu {
+            position: fixed;
+            inset: 0;
+            background: white;
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            padding: 40px;
+        }
+
+        #mobile-menu.active { display: flex; }
+
+        .menu-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 60px;
+        }
+
+        .menu-links {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .menu-links a {
+            font-size: 40px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        /* --- Hero --- */
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: flex-end;
+            padding-bottom: 120px;
+            border-bottom: 4px solid var(--color-dark);
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 65%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: contrast(1.1) grayscale(0.3);
+        }
+
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to left, transparent 0%, var(--color-base) 85%);
+        }
+
+        .hero-content h2 {
+            font-size: clamp(4rem, 15vw, 10rem);
+            font-weight: 900;
+            line-height: 0.75;
+            letter-spacing: -0.05em;
+            margin-bottom: 48px;
+        }
+
+        .hero-desc {
+            display: flex;
+            align-items: flex-start;
+            margin-top: 64px;
+        }
+
+        .hero-accent-bar {
+            width: 3px;
+            height: 120px;
+            background: var(--color-accent);
+            margin-right: 40px;
+        }
+
+        .hero-desc p {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-weight: 700;
+            max-width: 600px;
+            opacity: 0.9;
+        }
+
+        /* --- News --- */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            border-bottom: 2px solid var(--color-dark);
+        }
+
+        .news-sidebar {
+            grid-column: span 4;
+            padding: 80px 48px;
+            background-color: var(--color-alt);
+            border-right: 2px solid var(--color-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        @media (max-width: 1024px) {
+            .news-grid { display: block; }
+            .news-sidebar { border-right: none; border-bottom: 2px solid var(--color-dark); }
+        }
+
+        .news-sidebar h3 { font-size: 48px; font-weight: 900; font-style: italic; }
+
+        .news-main { grid-column: span 8; background: white; }
+
+        .news-item {
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            border-bottom: 2px solid rgba(42, 30, 20, 0.1);
+        }
+
+        .news-item:last-child { border-bottom: none; }
+
+        .news-meta { display: flex; align-items: center; gap: 16px; min-width: 180px; }
+        .line-dot { width: 6px; height: 32px; }
+        .date { font-size: 12px; font-weight: 900; opacity: 0.5; letter-spacing: 0.1em; }
+        .category { background: var(--color-dark); color: white; padding: 4px 12px; font-size: 9px; font-weight: 900; }
+
+        /* --- Concept --- */
+        .concept-title h2 { font-size: clamp(2.5rem, 8vw, 6rem); font-weight: 900; line-height: 1; }
+        
+        .concept-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border: 2px solid var(--color-dark);
+            box-shadow: 16px 16px 0px 0px rgba(42, 30, 20, 1);
+            margin-top: 64px;
+        }
+
+        @media (max-width: 768px) { .concept-cards { grid-template-columns: 1fr; } }
+
+        .concept-card {
+            background: white;
+            padding: 48px;
+            border-right: 2px solid var(--color-dark);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .concept-card:last-child { border-right: none; }
+        
+        .char-circle {
+            width: 64px;
+            height: 64px;
+            border: 2px solid var(--color-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-base);
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--color-accent);
+            margin-bottom: 40px;
+        }
+
+        /* --- Sa-Meshi --- */
+        .sameshi-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            margin-top: 80px;
+        }
+
+        @media (max-width: 1024px) { .sameshi-grid { grid-template-columns: 1fr; } }
+
+        .sameshi-card {
+            background: white;
+            border: 4px solid var(--color-dark);
+            box-shadow: 16px 16px 0px 0px rgba(42, 30, 20, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sameshi-img {
+            height: 400px;
+            overflow: hidden;
+            position: relative;
+            border-bottom: 4px solid var(--color-dark);
+        }
+
+        .sameshi-img img { width: 100%; height: 100%; object-fit: cover; }
+
+        .visual-tag {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: var(--color-dark);
+            color: white;
+            padding: 8px 24px;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .sameshi-body { padding: 48px; }
+        .sameshi-body h3 { font-size: 40px; font-weight: 900; margin-bottom: 32px; }
+
+        .tag-list { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+        .tag { border: 2px solid var(--color-dark); padding: 6px 16px; font-size: 12px; font-weight: 900; font-style: italic; }
+
+        /* --- Course Cards --- */
+        .course-bg { background-color: var(--color-dark); color: white; }
+        .course-title h2 { font-size: clamp(3rem, 10vw, 8rem); font-weight: 900; color: var(--color-accent); font-style: italic; }
+
+        .course-plan-header {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            border-left: 16px solid var(--color-accent);
+            padding-left: 40px;
+            margin-bottom: 64px;
+        }
+
+        .course-step-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 120px;
+        }
+
+        @media (max-width: 1024px) { .course-step-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 600px) { .course-step-grid { grid-template-columns: 1fr; } }
+
+        .step-card {
+            background: white;
+            border: 2px solid var(--color-dark);
+            box-shadow: 8px 8px 0px 0px rgba(42, 30, 20, 1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .step-img {
+            aspect-ratio: 1;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 2px solid var(--color-dark);
+        }
+
+        .step-img img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8); }
+
+        .step-num {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--color-accent);
+            color: white;
+            padding: 6px 20px;
+            font-weight: 900;
+        }
+
+        .step-content { padding: 24px; color: var(--color-dark); }
+        .step-time { font-size: 18px; font-weight: 900; color: var(--color-accent); font-style: italic; display: block; margin-bottom: 8px; }
+        .step-content h4 { font-size: 20px; font-weight: 900; line-height: 1.2; margin-bottom: 12px; }
+
+        /* --- Map Placeholder --- */
+        .map-placeholder {
+            aspect-ratio: 16/9;
+            background: var(--color-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            box-shadow: 32px 32px 0px 0px rgba(42, 30, 20, 0.1);
+        }
+
+        /* --- Instagram --- */
+        .insta-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) { .insta-grid { grid-template-columns: 1fr 1fr; } }
+
+        .insta-item {
+            aspect-ratio: 1;
+            border: 4px solid var(--color-dark);
+            overflow: hidden;
+            background: var(--color-base);
+        }
+
+        .insta-item img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); }
+
+        /* --- Footer --- */
+        footer {
+            background-color: var(--color-dark);
+            padding: 100px 24px;
+            color: white;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 80px;
+        }
+
+        @media (max-width: 1024px) { .footer-grid { grid-template-columns: 1fr; gap: 64px; } }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 48px;
+            background: var(--color-dark);
+            color: var(--color-accent);
+            font-weight: 900;
+            text-transform: uppercase;
+            border: 4px solid var(--color-dark);
+            cursor: pointer;
+            letter-spacing: 0.3em;
+            font-size: 14px;
+        }
+
+        .btn-light {
+            background: var(--color-base);
+            color: var(--color-dark);
+        }
+
+        /* --- Icons --- */
+        .icon { display: inline-block; vertical-align: middle; fill: currentColor; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="header-logo" onclick="window.scrollTo(0,0)">
+            <div class="logo-icon">
+                <svg class="icon" width="24" height="24" viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            </div>
+            <div class="logo-text">
+                <h1>Oimachi Sauna</h1>
+                <span>Project 2026</span>
+            </div>
         </div>
         
-        <nav className="flex-1 hidden lg:flex items-center justify-center gap-10 font-black text-[11px] uppercase tracking-[0.3em]">
-          {['News', 'Concept', 'Sa-Meshi', 'Course', 'Map'].map((item) => (
-            <a key={item} href={`#${item.toLowerCase().replace('-', '')}`} className="transition-colors">{item}</a>
-          ))}
+        <nav class="desktop-nav">
+            <a href="#news">News</a>
+            <a href="#concept">Concept</a>
+            <a href="#sameshi">Sa-Meshi</a>
+            <a href="#course">Course</a>
+            <a href="#map">Map</a>
         </nav>
 
-        <div className="flex items-stretch ml-auto">
-          <button 
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="flex lg:hidden flex-col justify-center gap-1.5 px-6 border-l-2 border-[#2A1E14] bg-white"
-          >
-            <div className="w-8 h-1" style={{ backgroundColor: colors.keikyu }}></div>
-            <div className="w-8 h-1" style={{ backgroundColor: colors.oimachi }}></div>
-            <div className="w-8 h-1" style={{ backgroundColor: colors.rinkai }}></div>
-          </button>
-
-          <div className="hidden lg:flex w-32 border-l-2 border-[#2A1E14] flex-col">
-            <div className="flex-1 border-b border-[#2A1E14]/10" style={{ backgroundColor: colors.keikyu }}></div>
-            <div className="flex-1 border-b border-[#2A1E14]/10" style={{ backgroundColor: colors.oimachi }}></div>
-            <div className="flex-1" style={{ backgroundColor: colors.rinkai }}></div>
-          </div>
-        </div>
-      </header>
-
-      {/* Mobile Menu Overlay */}
-      {isMenuOpen && (
-        <div className="fixed inset-0 z-[100] bg-white flex flex-col p-10">
-          <div className="flex justify-between items-center mb-16 text-[#2A1E14]">
-            <span className="font-black text-xl uppercase tracking-tighter italic">Menu</span>
-            <button onClick={() => setIsMenuOpen(false)} className="w-12 h-12 border-2 border-[#2A1E14] flex items-center justify-center">
-              <X size={24} />
+        <div class="flex items-stretch ml-auto" style="display:flex; margin-left: auto;">
+            <button class="hamburger-btn" onclick="toggleMenu()">
+                <div class="hb-line" style="background: var(--color-keikyu)"></div>
+                <div class="hb-line" style="background: var(--color-oimachi)"></div>
+                <div class="hb-line" style="background: var(--color-rinkai)"></div>
             </button>
-          </div>
-          <nav className="flex flex-col gap-8">
-            {['News', 'Concept', 'Sa-Meshi', 'Course', 'Map', 'SNS'].map((item) => (
-              <a 
-                key={item}
-                href={`#${item === 'SNS' ? 'sns' : item.toLowerCase().replace('-', '')}`}
-                onClick={() => setIsMenuOpen(false)}
-                className="text-5xl font-black uppercase tracking-tighter transition-colors flex items-center justify-between group"
-              >
-                {item} <ChevronRight className="opacity-0 group-hover:opacity-100" size={40} style={{ color: colors.accent }} />
-              </a>
-            ))}
-          </nav>
-        </div>
-      )}
 
-      {/* Hero Section */}
-      <section className="relative h-screen flex items-end pb-32 border-b-4 border-[#2A1E14] overflow-hidden" style={{ backgroundColor: colors.base }}>
-        <div className="absolute top-0 right-0 w-[65%] h-full">
-          <img 
-            src="https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&q=80&w=2000" 
-            alt="大井町の空景" 
-            className="w-full h-full object-cover filter contrast-[1.1] grayscale-[0.3]"
-          />
-          <div className="absolute inset-0" style={{ background: `linear-gradient(to left, transparent 0%, ${colors.base} 85%)` }}></div>
-        </div>
-        
-        <div className="relative z-10 max-w-7xl mx-auto px-10 w-full">
-          <div className="max-w-4xl">
-            <div className="flex gap-1 mb-8">
-              <div className="w-12 h-1.5" style={{ backgroundColor: colors.keikyu }}></div>
-              <div className="w-12 h-1.5" style={{ backgroundColor: colors.oimachi }}></div>
-              <div className="w-12 h-1.5" style={{ backgroundColor: colors.rinkai }}></div>
+            <div class="header-railway">
+                <div class="railway-line" style="background: var(--color-keikyu)"></div>
+                <div class="railway-line" style="background: var(--color-oimachi)"></div>
+                <div class="railway-line" style="background: var(--color-rinkai)"></div>
             </div>
-            <h2 className="text-[7rem] md:text-[12rem] font-black leading-[0.75] tracking-tighter mb-12">
-              大井町、<br />
-              <span style={{ color: colors.accent }}>ととのい</span><br />
-              の街。
-            </h2>
-            <div className="flex items-start mt-16">
-               <div className="w-3 h-32 mr-10 hidden md:block" style={{ backgroundColor: colors.accent }}></div>
-               <p className="text-xl md:text-3xl font-bold leading-relaxed max-w-2xl opacity-90">
-                駅を降りれば、そこは熱気と静寂の入口。<br />
-                汗を流し、この街の「味」に身体を預ける。<br />
-                一日を締めくくる、自分への確かな贅沢。
-              </p>
-            </div>
-          </div>
         </div>
-      </section>
+    </header>
 
-      {/* News Section */}
-      <section id="news" className="grid lg:grid-cols-12 border-b-2 border-[#2A1E14]" style={{ backgroundColor: colors.alt }}>
-        <div className="lg:col-span-4 p-12 lg:p-20 border-b-2 lg:border-b-0 lg:border-r-2 border-[#2A1E14] flex flex-col justify-between">
-          <div>
-            <h3 className="text-5xl font-black tracking-tighter mb-4 uppercase italic">News</h3>
-            <p className="font-bold text-gray-500 uppercase tracking-widest text-[10px] mb-10">最新の情報と街の動き</p>
-          </div>
-          <button className="flex items-center gap-4 font-black text-[10px] tracking-widest border-b-2 border-[#2A1E14] w-fit pb-1">
-            VIEW ALL STORIES <ChevronRight size={14} />
-          </button>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu">
+        <div class="menu-top">
+            <span style="font-weight:900; font-style:italic; font-size:24px; text-transform:uppercase;">Menu</span>
+            <button onclick="toggleMenu()" style="background:none; border:2px solid var(--color-dark); width:48px; height:48px; font-size:24px; font-weight:900;">✕</button>
         </div>
-        <div className="lg:col-span-8 flex flex-col bg-white">
-          {newsItems.map((news, idx) => (
-            <div key={news.id} className={`p-10 flex flex-col md:flex-row items-start md:items-center gap-8 group cursor-pointer transition-all ${idx !== 2 ? 'border-b-2 border-[#2A1E14]/10' : ''}`}>
-              <div className="flex items-center gap-4 w-48">
-                <div className="w-1.5 h-8" style={{ backgroundColor: news.line }}></div>
-                <span className="text-xs font-black text-gray-400 tracking-widest">{news.date}</span>
-              </div>
-              <div className="px-3 py-1 text-[9px] font-black uppercase tracking-[0.2em] text-white" style={{ backgroundColor: colors.dark }}>{news.category}</div>
-              <h4 className="flex-1 text-xl font-black transition-colors leading-snug">{news.title}</h4>
-              <ChevronRight className="opacity-0 group-hover:opacity-100 transition-all" style={{ color: colors.accent }} />
-            </div>
-          ))}
+        <div class="menu-links">
+            <a href="#news" onclick="toggleMenu()">News</a>
+            <a href="#concept" onclick="toggleMenu()">Concept</a>
+            <a href="#sameshi" onclick="toggleMenu()">Sa-Meshi</a>
+            <a href="#course" onclick="toggleMenu()">Course</a>
+            <a href="#map" onclick="toggleMenu()">Map</a>
+            <a href="#sns" onclick="toggleMenu()">SNS</a>
         </div>
-      </section>
-
-      {/* Concept Section */}
-      <section id="concept" className="py-32 bg-white relative overflow-hidden border-b-2 border-[#2A1E14]">
-        <div className="max-w-5xl mx-auto px-10 relative z-10">
-          <div className="mb-24">
-            <span className="font-black text-xl mb-6 block tracking-[0.4em] uppercase" style={{ color: colors.accent }}>The Project Vision</span>
-            <h2 className="text-5xl md:text-8xl font-black leading-none tracking-tighter mb-12 text-[#2A1E14]">
-              このプロジェクトの<br />掛け声は… <br />
-              <span className="inline-block relative">サ<span className="absolute -bottom-2 left-0 w-full h-2" style={{ backgroundColor: colors.keikyu }}></span></span>・
-              <span className="inline-block relative">ウ<span className="absolute -bottom-2 left-0 w-full h-2" style={{ backgroundColor: colors.oimachi }}></span></span>・
-              <span className="inline-block relative">ナ<span className="absolute -bottom-2 left-0 w-full h-2" style={{ backgroundColor: colors.rinkai }}></span></span>！
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-0 border-2 border-[#2A1E14] shadow-[16px_16px_0px_0px_rgba(42,30,20,1)] bg-[#2A1E14]">
-            {[
-              { char: 'サ！', text: '再開発で生まれ変わる街', line: colors.keikyu },
-              { char: 'ウ！', text: 'ウェルビーイングが日常にある暮らし', line: colors.oimachi },
-              { char: 'ナ！', text: '何度も通いたくなる回遊都市', line: colors.rinkai }
-            ].map((item, idx) => (
-              <div key={idx} className={`p-12 group transition-all flex flex-col items-start ${idx !== 2 ? 'md:border-r-2 border-[#2A1E14]' : ''}`} style={{ backgroundColor: colors.dark }}>
-                <div className="w-16 h-16 border-2 border-[#2A1E14] flex items-center justify-center mb-10" style={{ backgroundColor: item.line }}>
-                  <span className="font-black text-2xl text-white">{item.char}</span>
-                </div>
-                <p className="text-2xl font-black tracking-tighter leading-tight mb-12 min-h-[4em] text-white">{item.text}</p>
-                <div className="mt-auto w-full h-1" style={{ backgroundColor: item.line }}></div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Sa-Meshi Section */}
-      <section id="sameshi" className="py-32 px-10 border-b-2 border-[#2A1E14]" style={{ backgroundColor: colors.alt }}>
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col lg:flex-row justify-between items-end gap-12 mb-24 relative">
-             <div className="relative">
-                <span className="text-[12rem] font-black absolute -top-24 -left-10 select-none pointer-events-none uppercase tracking-tighter italic opacity-5" style={{ color: colors.dark }}>Flavor</span>
-                <h2 className="text-7xl md:text-9xl font-black tracking-tighter relative z-10 uppercase italic">サ飯を探す</h2>
-             </div>
-             <p className="max-w-md font-bold text-xl text-gray-500 leading-relaxed mb-6 border-l-8 pl-8" style={{ borderColor: colors.accent }}>
-              研ぎ澄まされた五感で味わう、大井町が誇る「最高の一杯」。
-             </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-16">
-            {saMeshiCategories.map((cat) => (
-              <div key={cat.id} className="group cursor-pointer bg-white border-4 border-[#2A1E14] flex flex-col shadow-[16px_16px_0px_0px_rgba(42,30,20,1)] hover:translate-x-[-4px] hover:translate-y-[-4px] transition-all">
-                <div className="h-[400px] overflow-hidden relative border-b-4 border-[#2A1E14]">
-                  <img src={cat.img} alt={cat.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 grayscale-[0.2] group-hover:grayscale-0" />
-                  <div className="absolute top-0 left-0 bg-[#2A1E14] text-white px-6 py-2 font-black text-xs tracking-widest uppercase border-b-2 border-r-2 border-[#2A1E14]">
-                     Visual: {cat.visual}
-                  </div>
-                </div>
-                <div className="p-12 flex-1 flex flex-col">
-                  <span className="text-xs font-black tracking-[0.5em] text-gray-400 uppercase mb-4 block">{cat.english}</span>
-                  <h3 className="text-5xl font-black mb-8 transition-colors" style={{ color: colors.dark }}>{cat.label}</h3>
-                  <p className="font-bold text-gray-500 mb-10 text-xl leading-relaxed">{cat.desc}</p>
-                  
-                  <div className="flex flex-wrap gap-3 mb-12">
-                    {cat.items.map(item => (
-                      <span key={item} className="px-4 py-1.5 text-xs font-black border-2 border-[#2A1E14] bg-white transition-colors">#{item}</span>
-                    ))}
-                  </div>
-                  
-                  <button className="mt-auto w-full border-4 border-[#2A1E14] py-5 font-black text-sm tracking-[0.4em] uppercase transition-all flex items-center justify-center gap-4 hover:bg-[#2A1E14] hover:text-white">
-                    店舗一覧を見る <ChevronRight size={20} />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Model Course Section - Revamped Step Cards */}
-      <section id="course" className="py-32 bg-[#2A1E14] text-white border-b-2 border-[#2A1E14]">
-        <div className="max-w-7xl mx-auto px-10">
-          <div className="mb-32 text-center">
-            <h2 className="text-6xl md:text-[10rem] font-black tracking-tighter uppercase mb-6" style={{ color: colors.accent }}>Course</h2>
-            <p className="font-black tracking-[0.6em] uppercase text-sm mb-4">あなたをナビゲートする、2つの歩き方。</p>
-            <div className="w-24 h-1 bg-white/20 mx-auto"></div>
-          </div>
-
-          <div className="space-y-48">
-            {coursePlans.map((course) => (
-              <div key={course.id} className="relative">
-                <div className="flex items-center gap-8 mb-16 border-l-[16px] pl-10" style={{ borderColor: course.accent }}>
-                   <div className="w-20 h-20 border-4 flex items-center justify-center text-black"
-                    style={{ backgroundColor: colors.base, borderColor: colors.base }}>
-                      {course.icon}
-                   </div>
-                   <div>
-                     <h3 className="text-4xl md:text-7xl font-black tracking-tight leading-none mb-2">{course.title}</h3>
-                     <span className="inline-block px-4 py-1 font-black text-xs uppercase tracking-widest"
-                      style={{ backgroundColor: colors.accent, color: 'white' }}>
-                       Target: {course.target}
-                     </span>
-                   </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {course.steps.map((step, i) => (
-                    <div key={i} className="group relative">
-                      {/* Step Card Style Container */}
-                      <div className="bg-white border-2 border-[#2A1E14] flex flex-col h-full shadow-[8px_8px_0px_0px_rgba(42,30,20,1)] transition-all group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] group-hover:shadow-[12px_12px_0px_0px_rgba(201,146,75,0.6)]">
-                        {/* Image Header of Card */}
-                        <div className="aspect-square overflow-hidden border-b-2 border-[#2A1E14] relative">
-                          <img src={step.img} alt={step.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 filter brightness-[0.8] group-hover:brightness-[1.0]" />
-                          <div className="absolute top-0 right-0 px-4 py-1.5 font-black text-sm border-l-2 border-b-2"
-                            style={{ backgroundColor: colors.accent, color: 'white', borderColor: colors.dark }}>
-                            0{i+1}
-                          </div>
-                        </div>
-
-                        {/* Card Content Body */}
-                        <div className="p-6 flex-1 flex flex-col text-[#2A1E14]">
-                          <div className="flex items-center gap-3 mb-4">
-                            <div className="p-2 border border-[#2A1E14]/10 bg-[#F7F3EB]" style={{ color: colors.accent }}>
-                              {step.icon}
-                            </div>
-                            <span className="font-black text-lg tracking-[0.1em] uppercase italic" style={{ color: colors.accent }}>{step.time}</span>
-                          </div>
-                          <h4 className="text-xl font-black mb-3 tracking-tight leading-tight">{step.title}</h4>
-                          <p className="text-sm font-bold leading-relaxed opacity-70">{step.desc}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Map (Coming Soon) */}
-      <section id="map" className="py-32 px-10 border-b-2 border-[#2A1E14]" style={{ backgroundColor: colors.base }}>
-        <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-center mb-20">
-             <h2 className="text-6xl font-black tracking-tighter uppercase text-[#2A1E14]">Sauna Map</h2>
-             <div className="flex gap-2">
-               <div className="w-10 h-10 border-2 border-[#2A1E14]" style={{ backgroundColor: colors.keikyu }}></div>
-               <div className="w-10 h-10 border-2 border-[#2A1E14]" style={{ backgroundColor: colors.oimachi }}></div>
-               <div className="w-10 h-10 border-2 border-[#2A1E14]" style={{ backgroundColor: colors.rinkai }}></div>
-             </div>
-          </div>
-          <div className="aspect-video bg-[#2A1E14] border-4 border-[#2A1E14] relative flex items-center justify-center overflow-hidden shadow-[32px_32px_0px_0px_rgba(42,30,20,1)]">
-             <div className="relative z-10 flex flex-col items-center text-center px-10">
-                <div className="w-24 h-24 bg-[#F7F3EB] flex items-center justify-center text-[#2A1E14] mb-8">
-                  <Lock size={40} />
-                </div>
-                <h3 className="text-5xl font-black mb-6 tracking-tighter uppercase italic text-[#C9924B]">Database Coming Soon</h3>
-                <p className="text-xl font-bold text-white/50 max-w-lg">現在、大井町周辺の施設データベースを構築中です。地図の完成まで今しばらくお待ちください。</p>
-             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SNS (Instagram) */}
-      <section id="sns" className="py-32 bg-white px-10 border-b-2 border-[#2A1E14]">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-20 text-center md:text-left">
-            <div>
-              <h2 className="text-6xl font-black tracking-tighter mb-4 uppercase leading-none">Instagram</h2>
-              <div className="flex items-center justify-center md:justify-start gap-4 font-black text-2xl mt-4" style={{ color: colors.accent }}>
-                <Instagram size={32} /> <span>＃サウナーの多い街</span>
-              </div>
-            </div>
-            <button className="bg-[#2A1E14] text-white px-12 py-5 font-black text-sm tracking-[0.3em] uppercase border-4 border-[#2A1E14] hover:bg-[#C9924B] transition-all mt-8 md:mt-0 shadow-[8px_8px_0px_0px_rgba(201,146,75,0.3)]">
-              FOLLOW US
-            </button>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="aspect-square border-4 border-[#2A1E14] group cursor-pointer relative overflow-hidden bg-[#F7F3EB]">
-                 <img src={`https://images.unsplash.com/photo-${1550 + i * 5}-1234567890?auto=format&fit=crop&q=80&w=600`} className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700" />
-                 <div className="absolute inset-0 bg-[#C9924B]/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
-                    <Instagram className="text-white" size={48} />
-                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="py-32 px-10" style={{ backgroundColor: colors.dark }}>
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-20">
-          <div className="max-w-sm">
-            <div className="flex items-center gap-4 mb-8">
-               <div className="w-12 h-12 border-4 border-white flex items-center justify-center text-[#2A1E14]" style={{ backgroundColor: colors.accent }}>
-                 <Droplets />
-               </div>
-               <span className="font-black text-3xl tracking-tighter uppercase leading-none italic" style={{ color: colors.accent }}>Oimachi<br/>Sauna</span>
-            </div>
-            <p className="text-lg font-bold leading-relaxed mb-10 opacity-50 italic text-white">
-              大井町は、何度来ても新しい「ととのい」がある。汗を流し、風を浴び、街を味わう。あなただけの物語をここで。
-            </p>
-          </div>
-          <div className="grid grid-cols-2 gap-20 font-black text-xs uppercase tracking-[0.3em]">
-             <div className="flex flex-col gap-6">
-                <p className="opacity-40 text-white uppercase tracking-widest">Navigation</p>
-                <span className="text-[#C9924B]">News</span>
-                <span className="text-[#C9924B]">Concept</span>
-                <span className="text-[#C9924B]">Sa-Meshi</span>
-             </div>
-             <div className="flex flex-col gap-6">
-                <p className="opacity-40 text-white uppercase tracking-widest">Social</p>
-                <span className="text-[#C9924B]">Instagram</span>
-                <span className="text-[#C9924B]">Twitter</span>
-             </div>
-          </div>
-        </div>
-        <div className="max-w-7xl mx-auto mt-32 pt-10 border-t-2 border-white/10 flex flex-col md:flex-row justify-between items-center gap-8 text-[10px] font-black uppercase tracking-[0.3em]" style={{ color: colors.accent }}>
-           <p>© 2026 OIMACHI SAUNA PROJECT. ALL RIGHTS RESERVED.</p>
-           <div className="flex gap-8 items-center">
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-1" style={{ backgroundColor: colors.keikyu }}></div>Keikyu
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-1" style={{ backgroundColor: colors.oimachi }}></div>Oimachi
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-1" style={{ backgroundColor: colors.rinkai }}></div>Rinkai
-              </div>
-           </div>
-        </div>
-      </footer>
     </div>
-  );
-};
 
-export default App;
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-bg">
+            <img src="https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&q=80&w=2000" alt="大井町">
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <span style="background:var(--color-dark); color:white; padding:4px 12px; font-weight:900; font-size:10px; letter-spacing:0.5em; text-transform:uppercase; margin-bottom:40px; display:inline-block;">Experience the deep reset</span>
+                <h2>大井町、<br><span style="color: var(--color-accent)">ととのい</span><br>の街。</h2>
+                <div class="hero-desc">
+                    <div class="hero-accent-bar"></div>
+                    <p>駅を降りれば、そこは熱気と静寂の入口。<br>汗を流し、この街の「味」に身体を預ける。<br>一日を締めくくる、自分への確かな贅沢。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- News -->
+    <section id="news" class="news-grid">
+        <div class="news-sidebar">
+            <div>
+                <h3>News</h3>
+                <p style="font-weight:700; font-size:10px; opacity:0.5; text-transform:uppercase; letter-spacing:0.1em; margin-top:16px;">最新の情報と街の動き</p>
+            </div>
+            <a href="#" style="font-weight:900; font-size:10px; letter-spacing:0.2em; border-bottom:2px solid var(--color-dark); width:fit-content; padding-bottom:4px;">VIEW ALL STORIES →</a>
+        </div>
+        <div class="news-main">
+            <div class="news-item">
+                <div class="news-meta">
+                    <div class="line-dot" style="background: var(--color-keikyu)"></div>
+                    <span class="date">2026.04.14</span>
+                </div>
+                <div class="category">OPEN</div>
+                <h4 style="font-size:20px; font-weight:900;">「品川サウナ」が描く、新しい大井町の夜。ついにベールを脱ぐ。</h4>
+            </div>
+            <div class="news-item">
+                <div class="news-meta">
+                    <div class="line-dot" style="background: var(--color-oimachi)"></div>
+                    <span class="date">2026.04.10</span>
+                </div>
+                <div class="category">UPDATE</div>
+                <h4 style="font-size:20px; font-weight:900;">ととのい後の「一杯」を。サ飯リストに地元愛溢れる店舗を掲載。</h4>
+            </div>
+            <div class="news-item">
+                <div class="news-meta">
+                    <div class="line-dot" style="background: var(--color-rinkai)"></div>
+                    <span class="date">2026.04.05</span>
+                </div>
+                <div class="category">EVENT</div>
+                <h4 style="font-size:20px; font-weight:900;">街を歩き、汗を流し、また歩く。スタンプラリー、はじまります。</h4>
+            </div>
+        </div>
+    </section>
+
+    <!-- Concept -->
+    <section id="concept" class="section-padding" style="background:white;">
+        <div class="container">
+            <div class="concept-title">
+                <span style="font-weight:900; color:var(--color-accent); font-size:18px; letter-spacing:0.4em; text-transform:uppercase; margin-bottom:24px; display:block;">About Project</span>
+                <h2 style="color:var(--color-dark)">このプロジェクトの<br>掛け声は… <br>
+                <span style="color: var(--color-accent)">サ・ウ・ナ！</span></h2>
+            </div>
+            <div class="concept-cards">
+                <div class="concept-card">
+                    <div class="char-circle" style="background:var(--color-keikyu); color:white;">サ！</div>
+                    <p style="font-size:24px; font-weight:900; min-height:4em;">再開発で生まれ変わる街</p>
+                    <div style="height:4px; width:100%; background:var(--color-keikyu); margin-top:auto;"></div>
+                </div>
+                <div class="concept-card">
+                    <div class="char-circle" style="background:var(--color-oimachi); color:white;">ウ！</div>
+                    <p style="font-size:24px; font-weight:900; min-height:4em;">ウェルビーイングが日常にある暮らし</p>
+                    <div style="height:4px; width:100%; background:var(--color-oimachi); margin-top:auto;"></div>
+                </div>
+                <div class="concept-card">
+                    <div class="char-circle" style="background:var(--color-rinkai); color:white;">ナ！</div>
+                    <p style="font-size:24px; font-weight:900; min-height:4em;">何度も通いたくなる回遊都市</p>
+                    <div style="height:4px; width:100%; background:var(--color-rinkai); margin-top:auto;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sa-Meshi -->
+    <section id="sameshi" class="section-padding" style="background: var(--color-alt);">
+        <div class="container">
+            <div style="position:relative; margin-bottom:80px;">
+                <h2 style="font-size: clamp(4rem, 10vw, 8rem); font-weight:900; text-transform:uppercase; font-style:italic;">サ飯を探す</h2>
+                <p style="border-left:8px solid var(--color-accent); padding-left:32px; font-size:20px; font-weight:700; max-width:400px; margin-top:24px;">研ぎ澄まされた五感で味わう、大井町が誇る「最高の一杯」。</p>
+            </div>
+            <div class="sameshi-grid">
+                <!-- Heavy -->
+                <div class="sameshi-card">
+                    <div class="sameshi-img">
+                        <img src="https://images.unsplash.com/photo-1591814448473-7af27feaf71e?auto=format&fit=crop&q=80&w=800" alt="がっつり">
+                        <div class="visual-tag">Visual: 丼・肉料理</div>
+                    </div>
+                    <div class="sameshi-body">
+                        <span style="font-size:12px; font-weight:900; letter-spacing:0.5em; opacity:0.4; text-transform:uppercase;">Heavy / Stamina</span>
+                        <h3>ガッツリ・熱量</h3>
+                        <p style="font-size:18px; font-weight:700; opacity:0.7;">身体が本能的に欲する、脂と塩分の黄金比。</p>
+                        <div class="tag-list">
+                            <span class="tag">#背脂ラーメン</span>
+                            <span class="tag">#スタミナカレー</span>
+                            <span class="tag">#鉄板焼肉</span>
+                        </div>
+                        <a href="#" class="btn" style="width:100%; margin-top:48px;">店舗一覧を見る →</a>
+                    </div>
+                </div>
+                <!-- Light -->
+                <div class="sameshi-card">
+                    <div class="sameshi-img">
+                        <img src="https://images.unsplash.com/photo-1547595628-c61a29f496f0?auto=format&fit=crop&q=80&w=800" alt="さっぱり">
+                        <div class="visual-tag">Visual: 蕎麦・冷麺</div>
+                    </div>
+                    <div class="sameshi-body">
+                        <span style="font-size:12px; font-weight:900; letter-spacing:0.5em; opacity:0.4; text-transform:uppercase;">Light / Refresh</span>
+                        <h3>サッパリ・清涼</h3>
+                        <p style="font-size:18px; font-weight:700; opacity:0.7;">ととのった五感に染み渡る、出汁の優しさ。</p>
+                        <div class="tag-list">
+                            <span class="tag">#冷やしうどん</span>
+                            <span class="tag">#十割蕎麦</span>
+                            <span class="tag">#鮮魚の塩焼き</span>
+                        </div>
+                        <a href="#" class="btn" style="width:100%; margin-top:48px;">店舗一覧を見る →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Course -->
+    <section id="course" class="section-padding course-bg">
+        <div class="container">
+            <div class="course-title" style="text-align:center; margin-bottom:100px;">
+                <h2>Course</h2>
+                <p style="font-weight:900; letter-spacing:0.6em; text-transform:uppercase; font-size:12px; margin-top:16px;">あなたをナビゲートする、2つの歩き方。</p>
+                <div style="width:100px; height:4px; background:var(--color-accent); margin: 32px auto 0;"></div>
+            </div>
+
+            <!-- Course A -->
+            <div class="course-plan">
+                <div class="course-plan-header">
+                    <div style="background:var(--color-base); padding:16px; border:2px solid var(--color-dark); color:var(--color-dark);">
+                        <svg class="icon" width="32" height="32" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    </div>
+                    <div>
+                        <h3 style="font-size: clamp(2rem, 5vw, 4rem); font-weight:900;">コースA: 仕事帰りのリセット旅</h3>
+                        <span style="background:var(--color-accent); padding:4px 16px; font-size:12px; font-weight:900; text-transform:uppercase;">Target: 働くサウナーへ</span>
+                    </div>
+                </div>
+                <div class="course-step-grid">
+                    <div class="step-card">
+                        <div class="step-img">
+                            <img src="https://images.unsplash.com/photo-1555854811-662552107acc?auto=format&fit=crop&q=80&w=600" alt="到着">
+                            <div class="step-num">01</div>
+                        </div>
+                        <div class="step-content">
+                            <span class="step-time">18:30</span>
+                            <h4>大井町駅に到着</h4>
+                            <p class="step-desc">ネオン輝く駅前。仕事の重圧を脱ぎ捨て、期待を胸に改札を抜ける。</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-img">
+                            <img src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=600" alt="サウナ">
+                            <div class="step-num">02</div>
+                        </div>
+                        <div class="step-content">
+                            <span class="step-time">18:45</span>
+                            <h4>熱気と対峙する</h4>
+                            <p class="step-desc">ロウリュの音、漂う香り。水風呂が思考を鮮明に変えていく。</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-img">
+                            <img src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&q=80&w=600" alt="水分補給">
+                            <div class="step-num">03</div>
+                        </div>
+                        <div class="step-content">
+                            <span class="step-time">20:00</span>
+                            <h4>最高の水分補給</h4>
+                            <p class="step-desc">火照った身体に黄金比の「オロポ」を。全ての疲れを溶かしていく。</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-img">
+                            <img src="https://images.unsplash.com/photo-1541529086526-db283c563270?auto=format&fit=crop&q=80&w=600" alt="サ飯">
+                            <div class="step-num">04</div>
+                        </div>
+                        <div class="step-content">
+                            <span class="step-time">20:30</span>
+                            <h4>スタミナサ飯で完結</h4>
+                            <p class="step-desc">名物の餃子とビール。ととのった後の味覚で味わう至高の体験。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map -->
+    <section id="map" class="section-padding">
+        <div class="container">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:64px;">
+                <h2 style="font-size:64px; font-weight:900; text-transform:uppercase;">Sauna Map</h2>
+                <div style="display:flex; gap:8px;">
+                    <div style="width:40px; height:40px; border:2px solid var(--color-dark); background:var(--color-keikyu)"></div>
+                    <div style="width:40px; height:40px; border:2px solid var(--color-dark); background:var(--color-oimachi)"></div>
+                    <div style="width:40px; height:40px; border:2px solid var(--color-dark); background:var(--color-rinkai)"></div>
+                </div>
+            </div>
+            <div class="map-placeholder">
+                <div style="background:var(--color-base); padding:32px; border-radius:0; border:4px solid var(--color-dark); margin-bottom:32px;">
+                    <svg class="icon" width="48" height="48" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <h3 style="font-size:40px; font-weight:900; font-style:italic; color:var(--color-accent); margin-bottom:16px;">Database Coming Soon</h3>
+                <p style="color:white; opacity:0.6; font-weight:700; max-width:500px; text-align:center;">現在、大井町周辺の施設データベースを構築中です。地図の完成まで今しばらくお待ちください。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Instagram -->
+    <section id="sns" class="section-padding" style="background:white; border-top:2px solid var(--color-dark);">
+        <div class="container">
+            <div style="display:flex; flex-direction:column; align-items:flex-start; margin-bottom:80px;">
+                <h2 style="font-size:64px; font-weight:900; text-transform:uppercase;">Instagram</h2>
+                <div style="display:flex; align-items:center; gap:16px; margin-top:16px;">
+                    <svg class="icon" style="color:var(--color-accent)" width="32" height="32" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                    <span style="font-size:24px; font-weight:900; color:var(--color-accent);">＃サウナーの多い街</span>
+                </div>
+            </div>
+            <div class="insta-grid">
+                <div class="insta-item"><img src="https://images.unsplash.com/photo-15501234567890?auto=format&fit=crop&q=80&w=600" alt="post"></div>
+                <div class="insta-item"><img src="https://images.unsplash.com/photo-15551234567890?auto=format&fit=crop&q=80&w=600" alt="post"></div>
+                <div class="insta-item"><img src="https://images.unsplash.com/photo-15601234567890?auto=format&fit=crop&q=80&w=600" alt="post"></div>
+                <div class="insta-item"><img src="https://images.unsplash.com/photo-15651234567890?auto=format&fit=crop&q=80&w=600" alt="post"></div>
+            </div>
+            <div style="text-align:center; margin-top:64px;">
+                <a href="#" class="btn shadow" style="box-shadow: 8px 8px 0px 0px rgba(201,146,75,0.3);">Follow Us</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div style="display:flex; align-items:center; gap:24px; margin-bottom:40px;">
+                        <div style="width:48px; height:48px; border:4px solid white; background:var(--color-accent); display:flex; align-items:center; justify-content:center;">
+                            <svg class="icon" width="24" height="24" viewBox="0 0 24 24" style="color:white;"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                        </div>
+                        <h2 style="font-size:32px; font-weight:900; font-style:italic; text-transform:uppercase; line-height:1;">Oimachi<br>Sauna</h2>
+                    </div>
+                    <p style="font-weight:700; opacity:0.5; font-style:italic; font-size:18px;">大井町は、何度来ても新しい「ととのい」がある。汗を流し、風を浴び、街を味わう。あなただけの物語をここで。</p>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:24px;">
+                    <p style="font-weight:900; text-transform:uppercase; letter-spacing:0.3em; opacity:0.4;">Navigation</p>
+                    <a href="#news" style="color:var(--color-accent); font-weight:900;">News</a>
+                    <a href="#concept" style="color:var(--color-accent); font-weight:900;">Concept</a>
+                    <a href="#sameshi" style="color:var(--color-accent); font-weight:900;">Sa-Meshi</a>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:24px;">
+                    <p style="font-weight:900; text-transform:uppercase; letter-spacing:0.3em; opacity:0.4;">Social</p>
+                    <a href="#" style="color:var(--color-accent); font-weight:900;">Instagram</a>
+                    <a href="#" style="color:var(--color-accent); font-weight:900;">Twitter</a>
+                </div>
+            </div>
+            <div style="margin-top:100px; padding-top:40px; border-top:2px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; font-size:10px; font-weight:900; letter-spacing:0.3em; color:rgba(255,255,255,0.3);">
+                <p>© 2026 OIMACHI SAUNA PROJECT. ALL RIGHTS RESERVED.</p>
+                <div style="display:flex; gap:32px;">
+                    <span style="display:flex; align-items:center; gap:8px;"><div style="width:16px; height:4px; background:var(--color-keikyu)"></div>KEIKYU</span>
+                    <span style="display:flex; align-items:center; gap:8px;"><div style="width:16px; height:4px; background:var(--color-oimachi)"></div>OIMACHI</span>
+                    <span style="display:flex; align-items:center; gap:8px;"><div style="width:16px; height:4px; background:var(--color-rinkai)"></div>RINKAI</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            if (menu.style.display === 'flex') {
+                menu.style.display = 'none';
+            } else {
+                menu.style.display = 'flex';
+            }
+        }
+    </script>
+</body>
+</html>
