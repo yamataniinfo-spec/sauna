@@ -1,0 +1,432 @@
+import React, { useState } from 'react';
+import { MapPin, Utensils, Instagram, ChevronRight, Droplets, Flame, Beer, Navigation, Clock, Thermometer, ArrowLeft, Coffee, Soup, Train, Sun, Moon, Sparkles, Megaphone, Tag, Lock, X } from 'lucide-react';
+
+const App = () => {
+  const [view, setView] = useState('home');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // 指定されたカラーパレット
+  const colors = {
+    base: "#F7F3EB",      // ベース：温かい空間
+    alt: "#EDE7DC",       // 切り替え：セクション背景
+    dark: "#2A1E14",      // 強調：暗（炭・重厚感）
+    accent: "#C9924B",    // 暖色：サウナの熱・光
+    // 3路線の差し色
+    keikyu: "#E60012",    // 京急レッド
+    oimachi: "#F39800",   // 大井町線オレンジ
+    rinkai: "#009094",    // 臨海線ターコイズ
+  };
+
+  const newsItems = [
+    { id: 1, date: "2026.04.14", category: "OPEN", title: "「品川サウナ」が描く、新しい大井町の夜。ついにベールを脱ぐ。", line: colors.keikyu },
+    { id: 2, date: "2026.04.10", category: "UPDATE", title: "ととのい後の「一杯」を。サ飯リストに地元愛溢れる店舗を掲載。", line: colors.oimachi },
+    { id: 3, date: "2026.04.05", category: "EVENT", title: "街を歩き、汗を流し、また歩く。スタンプラリー、はじまります。", line: colors.rinkai },
+  ];
+
+  const saMeshiCategories = [
+    { 
+      id: 'heavy', 
+      label: 'ガッツリ・熱量', 
+      english: 'HEAVY / STAMINA',
+      desc: '身体が本能的に欲する、脂と塩分の黄金比。',
+      visual: '丼・肉料理',
+      items: ['背脂ラーメン', 'スタミナカレー', '鉄板焼肉'],
+      img: "https://images.unsplash.com/photo-1591814448473-7af27feaf71e?auto=format&fit=crop&q=80&w=800",
+    },
+    { 
+      id: 'light', 
+      label: 'サッパリ・清涼', 
+      english: 'LIGHT / REFRESH',
+      desc: 'ととのった五感に染み渡る、出汁の優しさ。',
+      visual: '蕎麦・冷麺',
+      items: ['冷やしうどん', '十割蕎麦', '鮮魚の塩焼き'],
+      img: "https://images.unsplash.com/photo-1547595628-c61a29f496f0?auto=format&fit=crop&q=80&w=800",
+    }
+  ];
+
+  const coursePlans = [
+    {
+      id: 'A',
+      title: "コースA: 仕事帰りのクイックリセット旅",
+      target: "働くサウナーへ",
+      accent: colors.accent,
+      icon: <Moon size={32} />,
+      steps: [
+        { time: "18:30", title: "大井町駅に到着", desc: "ネオン輝く駅前。仕事の重圧を脱ぎ捨て、期待を胸に改札を抜ける。", icon: <Train size={20}/>, img: "https://images.unsplash.com/photo-1555854811-662552107acc?auto=format&fit=crop&q=80&w=600" },
+        { time: "18:45", title: "熱気と対峙する", desc: "ロウリュの音、漂う香り。水風呂が思考を鮮明に変えていく。", icon: <Flame size={20}/>, img: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=600" },
+        { time: "20:00", title: "最高の水分補給", desc: "火照った身体に黄金比の「オロポ」を。全ての疲れを溶かしていく。", icon: <Droplets size={20}/>, img: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&q=80&w=600" },
+        { time: "20:30", title: "スタミナサ飯で完結", desc: "名物の餃子とビール。ととのった後の味覚で味わう至高の体験。", icon: <Utensils size={20}/>, img: "https://images.unsplash.com/photo-1541529086526-db283c563270?auto=format&fit=crop&q=80&w=600" }
+      ]
+    },
+    {
+      id: 'B',
+      title: "コースB: 休日午後の満喫ハシゴ旅",
+      target: "自分へのご褒美に",
+      accent: colors.accent,
+      icon: <Sun size={32} />,
+      steps: [
+        { time: "13:00", title: "昼下がりのチルタイム", desc: "喧騒を離れたカフェ。サウナ前の贅沢なひとときを読書と共に。", icon: <Coffee size={20}/>, img: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&q=80&w=600" },
+        { time: "15:00", title: "ゆったり没入サウナ", desc: "昼の外気浴。時間を忘れて、深く、心地よくととのう。", icon: <Sparkles size={20}/>, img: "https://images.unsplash.com/photo-1596131397999-bb0159495033?auto=format&fit=crop&q=80&w=600" },
+        { time: "17:30", title: "路地裏のハシゴ酒", desc: "夕暮れの東小路。提灯の明かりに誘われ、大井町のディープな食をハシゴ。", icon: <Navigation size={20}/>, img: "https://images.unsplash.com/photo-1583155102374-f25769742512?auto=format&fit=crop&q=80&w=600" },
+        { time: "20:00", title: "最高の気分で家路に", desc: "全身が幸福感で満たされる。明日へのエネルギーを街から受け取って。", icon: <Moon size={20}/>, img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=600" }
+      ]
+    }
+  ];
+
+  return (
+    <div className="min-h-screen font-sans" style={{ backgroundColor: colors.base, color: colors.dark }}>
+      
+      {/* Header: Editorial & Railway Identity */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b-2 border-[#2A1E14] flex h-20 items-stretch overflow-hidden">
+        <div className="flex items-center px-8 border-r-2 border-[#2A1E14] cursor-pointer bg-white z-10" onClick={() => setView('home')}>
+          <div className="w-10 h-10 border-2 border-[#2A1E14] flex items-center justify-center text-white mr-4" style={{ backgroundColor: colors.accent }}>
+            <Droplets size={24} />
+          </div>
+          <div className="flex flex-col">
+            <h1 className="font-black text-xl tracking-tighter leading-none uppercase">Oimachi Sauna</h1>
+            <span className="text-[9px] font-black tracking-[0.4em] opacity-60 uppercase">Project 2026</span>
+          </div>
+        </div>
+        
+        <nav className="flex-1 hidden lg:flex items-center justify-center gap-10 font-black text-[11px] uppercase tracking-[0.3em]">
+          {['News', 'Concept', 'Sa-Meshi', 'Course', 'Map'].map((item) => (
+            <a key={item} href={`#${item.toLowerCase().replace('-', '')}`} className="transition-colors">{item}</a>
+          ))}
+        </nav>
+
+        <div className="flex items-stretch ml-auto">
+          <button 
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="flex lg:hidden flex-col justify-center gap-1.5 px-6 border-l-2 border-[#2A1E14] bg-white"
+          >
+            <div className="w-8 h-1" style={{ backgroundColor: colors.keikyu }}></div>
+            <div className="w-8 h-1" style={{ backgroundColor: colors.oimachi }}></div>
+            <div className="w-8 h-1" style={{ backgroundColor: colors.rinkai }}></div>
+          </button>
+
+          <div className="hidden lg:flex w-32 border-l-2 border-[#2A1E14] flex-col">
+            <div className="flex-1 border-b border-[#2A1E14]/10" style={{ backgroundColor: colors.keikyu }}></div>
+            <div className="flex-1 border-b border-[#2A1E14]/10" style={{ backgroundColor: colors.oimachi }}></div>
+            <div className="flex-1" style={{ backgroundColor: colors.rinkai }}></div>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Menu Overlay */}
+      {isMenuOpen && (
+        <div className="fixed inset-0 z-[100] bg-white flex flex-col p-10">
+          <div className="flex justify-between items-center mb-16 text-[#2A1E14]">
+            <span className="font-black text-xl uppercase tracking-tighter italic">Menu</span>
+            <button onClick={() => setIsMenuOpen(false)} className="w-12 h-12 border-2 border-[#2A1E14] flex items-center justify-center">
+              <X size={24} />
+            </button>
+          </div>
+          <nav className="flex flex-col gap-8">
+            {['News', 'Concept', 'Sa-Meshi', 'Course', 'Map', 'SNS'].map((item) => (
+              <a 
+                key={item}
+                href={`#${item === 'SNS' ? 'sns' : item.toLowerCase().replace('-', '')}`}
+                onClick={() => setIsMenuOpen(false)}
+                className="text-5xl font-black uppercase tracking-tighter transition-colors flex items-center justify-between group"
+              >
+                {item} <ChevronRight className="opacity-0 group-hover:opacity-100" size={40} style={{ color: colors.accent }} />
+              </a>
+            ))}
+          </nav>
+        </div>
+      )}
+
+      {/* Hero Section */}
+      <section className="relative h-screen flex items-end pb-32 border-b-4 border-[#2A1E14] overflow-hidden" style={{ backgroundColor: colors.base }}>
+        <div className="absolute top-0 right-0 w-[65%] h-full">
+          <img 
+            src="https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&q=80&w=2000" 
+            alt="大井町の空景" 
+            className="w-full h-full object-cover filter contrast-[1.1] grayscale-[0.3]"
+          />
+          <div className="absolute inset-0" style={{ background: `linear-gradient(to left, transparent 0%, ${colors.base} 85%)` }}></div>
+        </div>
+        
+        <div className="relative z-10 max-w-7xl mx-auto px-10 w-full">
+          <div className="max-w-4xl">
+            <div className="flex gap-1 mb-8">
+              <div className="w-12 h-1.5" style={{ backgroundColor: colors.keikyu }}></div>
+              <div className="w-12 h-1.5" style={{ backgroundColor: colors.oimachi }}></div>
+              <div className="w-12 h-1.5" style={{ backgroundColor: colors.rinkai }}></div>
+            </div>
+            <h2 className="text-[7rem] md:text-[12rem] font-black leading-[0.75] tracking-tighter mb-12">
+              大井町、<br />
+              <span style={{ color: colors.accent }}>ととのい</span><br />
+              の街。
+            </h2>
+            <div className="flex items-start mt-16">
+               <div className="w-3 h-32 mr-10 hidden md:block" style={{ backgroundColor: colors.accent }}></div>
+               <p className="text-xl md:text-3xl font-bold leading-relaxed max-w-2xl opacity-90">
+                駅を降りれば、そこは熱気と静寂の入口。<br />
+                汗を流し、この街の「味」に身体を預ける。<br />
+                一日を締めくくる、自分への確かな贅沢。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* News Section */}
+      <section id="news" className="grid lg:grid-cols-12 border-b-2 border-[#2A1E14]" style={{ backgroundColor: colors.alt }}>
+        <div className="lg:col-span-4 p-12 lg:p-20 border-b-2 lg:border-b-0 lg:border-r-2 border-[#2A1E14] flex flex-col justify-between">
+          <div>
+            <h3 className="text-5xl font-black tracking-tighter mb-4 uppercase italic">News</h3>
+            <p className="font-bold text-gray-500 uppercase tracking-widest text-[10px] mb-10">最新の情報と街の動き</p>
+          </div>
+          <button className="flex items-center gap-4 font-black text-[10px] tracking-widest border-b-2 border-[#2A1E14] w-fit pb-1">
+            VIEW ALL STORIES <ChevronRight size={14} />
+          </button>
+        </div>
+        <div className="lg:col-span-8 flex flex-col bg-white">
+          {newsItems.map((news, idx) => (
+            <div key={news.id} className={`p-10 flex flex-col md:flex-row items-start md:items-center gap-8 group cursor-pointer transition-all ${idx !== 2 ? 'border-b-2 border-[#2A1E14]/10' : ''}`}>
+              <div className="flex items-center gap-4 w-48">
+                <div className="w-1.5 h-8" style={{ backgroundColor: news.line }}></div>
+                <span className="text-xs font-black text-gray-400 tracking-widest">{news.date}</span>
+              </div>
+              <div className="px-3 py-1 text-[9px] font-black uppercase tracking-[0.2em] text-white" style={{ backgroundColor: colors.dark }}>{news.category}</div>
+              <h4 className="flex-1 text-xl font-black transition-colors leading-snug">{news.title}</h4>
+              <ChevronRight className="opacity-0 group-hover:opacity-100 transition-all" style={{ color: colors.accent }} />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Concept Section */}
+      <section id="concept" className="py-32 bg-white relative overflow-hidden border-b-2 border-[#2A1E14]">
+        <div className="max-w-5xl mx-auto px-10 relative z-10">
+          <div className="mb-24">
+            <span className="font-black text-xl mb-6 block tracking-[0.4em] uppercase" style={{ color: colors.accent }}>The Project Vision</span>
+            <h2 className="text-5xl md:text-8xl font-black leading-none tracking-tighter mb-12 text-[#2A1E14]">
+              このプロジェクトの<br />掛け声は… <br />
+              <span className="inline-block relative">サ<span className="absolute -bottom-2 left-0 w-full h-2" style={{ backgroundColor: colors.keikyu }}></span></span>・
+              <span className="inline-block relative">ウ<span className="absolute -bottom-2 left-0 w-full h-2" style={{ backgroundColor: colors.oimachi }}></span></span>・
+              <span className="inline-block relative">ナ<span className="absolute -bottom-2 left-0 w-full h-2" style={{ backgroundColor: colors.rinkai }}></span></span>！
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-0 border-2 border-[#2A1E14] shadow-[16px_16px_0px_0px_rgba(42,30,20,1)] bg-[#2A1E14]">
+            {[
+              { char: 'サ！', text: '再開発で生まれ変わる街', line: colors.keikyu },
+              { char: 'ウ！', text: 'ウェルビーイングが日常にある暮らし', line: colors.oimachi },
+              { char: 'ナ！', text: '何度も通いたくなる回遊都市', line: colors.rinkai }
+            ].map((item, idx) => (
+              <div key={idx} className={`p-12 group transition-all flex flex-col items-start ${idx !== 2 ? 'md:border-r-2 border-[#2A1E14]' : ''}`} style={{ backgroundColor: colors.dark }}>
+                <div className="w-16 h-16 border-2 border-[#2A1E14] flex items-center justify-center mb-10" style={{ backgroundColor: item.line }}>
+                  <span className="font-black text-2xl text-white">{item.char}</span>
+                </div>
+                <p className="text-2xl font-black tracking-tighter leading-tight mb-12 min-h-[4em] text-white">{item.text}</p>
+                <div className="mt-auto w-full h-1" style={{ backgroundColor: item.line }}></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Sa-Meshi Section */}
+      <section id="sameshi" className="py-32 px-10 border-b-2 border-[#2A1E14]" style={{ backgroundColor: colors.alt }}>
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row justify-between items-end gap-12 mb-24 relative">
+             <div className="relative">
+                <span className="text-[12rem] font-black absolute -top-24 -left-10 select-none pointer-events-none uppercase tracking-tighter italic opacity-5" style={{ color: colors.dark }}>Flavor</span>
+                <h2 className="text-7xl md:text-9xl font-black tracking-tighter relative z-10 uppercase italic">サ飯を探す</h2>
+             </div>
+             <p className="max-w-md font-bold text-xl text-gray-500 leading-relaxed mb-6 border-l-8 pl-8" style={{ borderColor: colors.accent }}>
+              研ぎ澄まされた五感で味わう、大井町が誇る「最高の一杯」。
+             </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-16">
+            {saMeshiCategories.map((cat) => (
+              <div key={cat.id} className="group cursor-pointer bg-white border-4 border-[#2A1E14] flex flex-col shadow-[16px_16px_0px_0px_rgba(42,30,20,1)] hover:translate-x-[-4px] hover:translate-y-[-4px] transition-all">
+                <div className="h-[400px] overflow-hidden relative border-b-4 border-[#2A1E14]">
+                  <img src={cat.img} alt={cat.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 grayscale-[0.2] group-hover:grayscale-0" />
+                  <div className="absolute top-0 left-0 bg-[#2A1E14] text-white px-6 py-2 font-black text-xs tracking-widest uppercase border-b-2 border-r-2 border-[#2A1E14]">
+                     Visual: {cat.visual}
+                  </div>
+                </div>
+                <div className="p-12 flex-1 flex flex-col">
+                  <span className="text-xs font-black tracking-[0.5em] text-gray-400 uppercase mb-4 block">{cat.english}</span>
+                  <h3 className="text-5xl font-black mb-8 transition-colors" style={{ color: colors.dark }}>{cat.label}</h3>
+                  <p className="font-bold text-gray-500 mb-10 text-xl leading-relaxed">{cat.desc}</p>
+                  
+                  <div className="flex flex-wrap gap-3 mb-12">
+                    {cat.items.map(item => (
+                      <span key={item} className="px-4 py-1.5 text-xs font-black border-2 border-[#2A1E14] bg-white transition-colors">#{item}</span>
+                    ))}
+                  </div>
+                  
+                  <button className="mt-auto w-full border-4 border-[#2A1E14] py-5 font-black text-sm tracking-[0.4em] uppercase transition-all flex items-center justify-center gap-4 hover:bg-[#2A1E14] hover:text-white">
+                    店舗一覧を見る <ChevronRight size={20} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Model Course Section - Revamped Step Cards */}
+      <section id="course" className="py-32 bg-[#2A1E14] text-white border-b-2 border-[#2A1E14]">
+        <div className="max-w-7xl mx-auto px-10">
+          <div className="mb-32 text-center">
+            <h2 className="text-6xl md:text-[10rem] font-black tracking-tighter uppercase mb-6" style={{ color: colors.accent }}>Course</h2>
+            <p className="font-black tracking-[0.6em] uppercase text-sm mb-4">あなたをナビゲートする、2つの歩き方。</p>
+            <div className="w-24 h-1 bg-white/20 mx-auto"></div>
+          </div>
+
+          <div className="space-y-48">
+            {coursePlans.map((course) => (
+              <div key={course.id} className="relative">
+                <div className="flex items-center gap-8 mb-16 border-l-[16px] pl-10" style={{ borderColor: course.accent }}>
+                   <div className="w-20 h-20 border-4 flex items-center justify-center text-black"
+                    style={{ backgroundColor: colors.base, borderColor: colors.base }}>
+                      {course.icon}
+                   </div>
+                   <div>
+                     <h3 className="text-4xl md:text-7xl font-black tracking-tight leading-none mb-2">{course.title}</h3>
+                     <span className="inline-block px-4 py-1 font-black text-xs uppercase tracking-widest"
+                      style={{ backgroundColor: colors.accent, color: 'white' }}>
+                       Target: {course.target}
+                     </span>
+                   </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {course.steps.map((step, i) => (
+                    <div key={i} className="group relative">
+                      {/* Step Card Style Container */}
+                      <div className="bg-white border-2 border-[#2A1E14] flex flex-col h-full shadow-[8px_8px_0px_0px_rgba(42,30,20,1)] transition-all group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] group-hover:shadow-[12px_12px_0px_0px_rgba(201,146,75,0.6)]">
+                        {/* Image Header of Card */}
+                        <div className="aspect-square overflow-hidden border-b-2 border-[#2A1E14] relative">
+                          <img src={step.img} alt={step.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 filter brightness-[0.8] group-hover:brightness-[1.0]" />
+                          <div className="absolute top-0 right-0 px-4 py-1.5 font-black text-sm border-l-2 border-b-2"
+                            style={{ backgroundColor: colors.accent, color: 'white', borderColor: colors.dark }}>
+                            0{i+1}
+                          </div>
+                        </div>
+
+                        {/* Card Content Body */}
+                        <div className="p-6 flex-1 flex flex-col text-[#2A1E14]">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="p-2 border border-[#2A1E14]/10 bg-[#F7F3EB]" style={{ color: colors.accent }}>
+                              {step.icon}
+                            </div>
+                            <span className="font-black text-lg tracking-[0.1em] uppercase italic" style={{ color: colors.accent }}>{step.time}</span>
+                          </div>
+                          <h4 className="text-xl font-black mb-3 tracking-tight leading-tight">{step.title}</h4>
+                          <p className="text-sm font-bold leading-relaxed opacity-70">{step.desc}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Map (Coming Soon) */}
+      <section id="map" className="py-32 px-10 border-b-2 border-[#2A1E14]" style={{ backgroundColor: colors.base }}>
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-center mb-20">
+             <h2 className="text-6xl font-black tracking-tighter uppercase text-[#2A1E14]">Sauna Map</h2>
+             <div className="flex gap-2">
+               <div className="w-10 h-10 border-2 border-[#2A1E14]" style={{ backgroundColor: colors.keikyu }}></div>
+               <div className="w-10 h-10 border-2 border-[#2A1E14]" style={{ backgroundColor: colors.oimachi }}></div>
+               <div className="w-10 h-10 border-2 border-[#2A1E14]" style={{ backgroundColor: colors.rinkai }}></div>
+             </div>
+          </div>
+          <div className="aspect-video bg-[#2A1E14] border-4 border-[#2A1E14] relative flex items-center justify-center overflow-hidden shadow-[32px_32px_0px_0px_rgba(42,30,20,1)]">
+             <div className="relative z-10 flex flex-col items-center text-center px-10">
+                <div className="w-24 h-24 bg-[#F7F3EB] flex items-center justify-center text-[#2A1E14] mb-8">
+                  <Lock size={40} />
+                </div>
+                <h3 className="text-5xl font-black mb-6 tracking-tighter uppercase italic text-[#C9924B]">Database Coming Soon</h3>
+                <p className="text-xl font-bold text-white/50 max-w-lg">現在、大井町周辺の施設データベースを構築中です。地図の完成まで今しばらくお待ちください。</p>
+             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SNS (Instagram) */}
+      <section id="sns" className="py-32 bg-white px-10 border-b-2 border-[#2A1E14]">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-center mb-20 text-center md:text-left">
+            <div>
+              <h2 className="text-6xl font-black tracking-tighter mb-4 uppercase leading-none">Instagram</h2>
+              <div className="flex items-center justify-center md:justify-start gap-4 font-black text-2xl mt-4" style={{ color: colors.accent }}>
+                <Instagram size={32} /> <span>＃サウナーの多い街</span>
+              </div>
+            </div>
+            <button className="bg-[#2A1E14] text-white px-12 py-5 font-black text-sm tracking-[0.3em] uppercase border-4 border-[#2A1E14] hover:bg-[#C9924B] transition-all mt-8 md:mt-0 shadow-[8px_8px_0px_0px_rgba(201,146,75,0.3)]">
+              FOLLOW US
+            </button>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="aspect-square border-4 border-[#2A1E14] group cursor-pointer relative overflow-hidden bg-[#F7F3EB]">
+                 <img src={`https://images.unsplash.com/photo-${1550 + i * 5}-1234567890?auto=format&fit=crop&q=80&w=600`} className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700" />
+                 <div className="absolute inset-0 bg-[#C9924B]/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                    <Instagram className="text-white" size={48} />
+                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-32 px-10" style={{ backgroundColor: colors.dark }}>
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-20">
+          <div className="max-w-sm">
+            <div className="flex items-center gap-4 mb-8">
+               <div className="w-12 h-12 border-4 border-white flex items-center justify-center text-[#2A1E14]" style={{ backgroundColor: colors.accent }}>
+                 <Droplets />
+               </div>
+               <span className="font-black text-3xl tracking-tighter uppercase leading-none italic" style={{ color: colors.accent }}>Oimachi<br/>Sauna</span>
+            </div>
+            <p className="text-lg font-bold leading-relaxed mb-10 opacity-50 italic text-white">
+              大井町は、何度来ても新しい「ととのい」がある。汗を流し、風を浴び、街を味わう。あなただけの物語をここで。
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-20 font-black text-xs uppercase tracking-[0.3em]">
+             <div className="flex flex-col gap-6">
+                <p className="opacity-40 text-white uppercase tracking-widest">Navigation</p>
+                <span className="text-[#C9924B]">News</span>
+                <span className="text-[#C9924B]">Concept</span>
+                <span className="text-[#C9924B]">Sa-Meshi</span>
+             </div>
+             <div className="flex flex-col gap-6">
+                <p className="opacity-40 text-white uppercase tracking-widest">Social</p>
+                <span className="text-[#C9924B]">Instagram</span>
+                <span className="text-[#C9924B]">Twitter</span>
+             </div>
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto mt-32 pt-10 border-t-2 border-white/10 flex flex-col md:flex-row justify-between items-center gap-8 text-[10px] font-black uppercase tracking-[0.3em]" style={{ color: colors.accent }}>
+           <p>© 2026 OIMACHI SAUNA PROJECT. ALL RIGHTS RESERVED.</p>
+           <div className="flex gap-8 items-center">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-1" style={{ backgroundColor: colors.keikyu }}></div>Keikyu
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-1" style={{ backgroundColor: colors.oimachi }}></div>Oimachi
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-1" style={{ backgroundColor: colors.rinkai }}></div>Rinkai
+              </div>
+           </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default App;
